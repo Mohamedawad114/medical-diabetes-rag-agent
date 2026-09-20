@@ -1,0 +1,652 @@
+{
+  "name": "RAG-chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1HKROZ4TpZntzhqU3EAfnla-QjjtMgMDD",
+          "mode": "list",
+          "cachedResultName": "n8n_pdfs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1HKROZ4TpZntzhqU3EAfnla-QjjtMgMDD"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1536,
+        -512
+      ],
+      "id": "fc016235-2fa8-42b4-a057-66ac88157edc",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B6tQUvyNu3m69bge",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1232,
+        -624
+      ],
+      "id": "12c33529-ba7a-4507-b2ee-1212b8992add",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B6tQUvyNu3m69bge",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "n8n-chatbot",
+          "mode": "list",
+          "cachedResultName": "n8n-chatbot"
+        },
+        "embeddingBatchSize": 5,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        -608,
+        -576
+      ],
+      "id": "fb42d352-cb9b-4744-b784-40076034251f",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "3Wdr9x3KZd7zxyFJ",
+          "name": "Qdrant account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        -304
+      ],
+      "id": "821f0180-28e6-4d8b-ad3d-9d8f70c840fd",
+      "name": "Default Data Loader",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "modelName": "BAAI/bge-base-en-v1.5",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -320
+      ],
+      "id": "caf14b5a-fdff-4ede-aa17-d505b476e288",
+      "name": "Embeddings HuggingFace Inference",
+      "retryOnFail": true,
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "rA8d8AZTxouoLATP",
+          "name": "Hugging Face account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "RAG System",
+        "height": 704,
+        "width": 1680
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1952,
+        -672
+      ],
+      "id": "f5ce910b-2709-4325-8fd8-a9eba644727f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1HKROZ4TpZntzhqU3EAfnla-QjjtMgMDD",
+            "mode": "list",
+            "cachedResultName": "n8n_pdfs",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1HKROZ4TpZntzhqU3EAfnla-QjjtMgMDD"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1440,
+        -240
+      ],
+      "id": "f1a9effe-5cec-4f73-9168-0ff312efdcdb",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B6tQUvyNu3m69bge",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1072,
+        -240
+      ],
+      "id": "58f26fdd-7c4a-4bf6-83b1-9f77f67c1676",
+      "name": "Download file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B6tQUvyNu3m69bge",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f161f8bd-9de5-4c5d-b21e-fcc565055eaf",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "89204595-8bf0-4113-bc32-445ec0968fa7",
+              "name": "file_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -1248,
+        -176
+      ],
+      "id": "66b5f8a9-4e3c-497c-b65f-976ce13e08a2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -912,
+        -448
+      ],
+      "id": "3d4bea9c-ac07-46db-b137-8274f181eea3",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1648,
+        -144
+      ],
+      "id": "e2f64faf-48bd-412b-90dd-a5e831b59471",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsHuggingFaceInference",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -96
+      ],
+      "id": "86f57e65-0cfa-4036-897f-f59c13ccd35b",
+      "name": "Embeddings HuggingFace Inference1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "huggingFaceApi": {
+          "id": "rA8d8AZTxouoLATP",
+          "name": "Hugging Face account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -96,
+        -448
+      ],
+      "id": "287c4746-c046-4480-b392-a18b84869080",
+      "name": "Telegram Trigger1",
+      "webhookId": "506ed85f-1c47-4b02-bf59-482109f537eb",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Z9g3v8UAWdCI32v",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are an expert AI Medical Assistant specialized in Diabetes Care and Management.\n\nInstructions & Rules:\n1. Search Vector Store First: Always query the Qdrant vector store first to search for relevant information regarding diabetes types (Type 1, Type 2, Gestational), symptoms, blood sugar monitoring, insulin guidelines, dietary advice, and WHO/ADA clinical protocols.\n2. Plain Text Only: Do NOT use any HTML tags (such as <b>, <i>, <br>, <a>, etc.) or special formatting that breaks Telegram messages. Send clean, plain text only.\n3. Language & Tone: Answer clearly and accurately in Arabic (or the language of the user). Keep the tone professional, supportive, and informative.\n4. Safety First: Always provide evidence-based guidance based on the context retrieved, and remind users to consult their attending doctor for personal medication adjustments.",
+          "tracingMetadata": {
+            "values": [
+              {
+                "key": "chat id",
+                "type": "numberValue",
+                "numberValue": "={{ $json.message.from.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        176,
+        -592
+      ],
+      "id": "42d7f318-d4de-4a7c-9782-025bf3ee420d",
+      "name": "AI Agent1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -400
+      ],
+      "id": "f831e813-34e5-40e5-a260-ba7c55505ad5",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "wWi7TUDc8xNDowZv",
+          "name": "Groq account 6"
+        }
+      },
+      "notes": "do one request"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Telegram Trigger1\"].json.message.chat.id }}",
+        "text": "={{ typeof $json.output === 'object' ? JSON.stringify($json.output) : ($json.output || $json.text || $json) }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        -544
+      ],
+      "id": "4bc1ae58-ebf9-46f7-b8a6-f660c05ca791",
+      "name": "Send a text message1",
+      "webhookId": "8c767f02-f358-4f33-8099-34b4a8de5376",
+      "credentials": {
+        "telegramApi": {
+          "id": "0Z9g3v8UAWdCI32v",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "chat\n",
+        "height": 704,
+        "width": 992
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -672
+      ],
+      "id": "19f0cd50-a9d0-4921-84e4-61ec5f54214a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool to search and retrieve official medical guidelines, disease information, treatment protocols, and WHO clinical documentation. Input should be a clear medical search query in Arabic or English."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        -400
+      ],
+      "id": "1b06e980-5837-42be-b32d-1474eb86ff1a",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.8-27b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -240
+      ],
+      "id": "ecb5fdf9-46be-4cd5-891e-d6b7837a7ac9",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "wWi7TUDc8xNDowZv",
+          "name": "Groq account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "chatbot_n8n",
+          "mode": "list",
+          "cachedResultName": "chatbot_n8n"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        -256
+      ],
+      "id": "786de031-75f6-4027-bdfe-efe1b2aa0be4",
+      "name": "Qdrant Vector Store2",
+      "credentials": {
+        "qdrantApi": {
+          "id": "3Wdr9x3KZd7zxyFJ",
+          "name": "Qdrant account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Download file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings HuggingFace Inference1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store2": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 1800
+  },
+  "versionId": "779c245c-70a0-4477-b183-c2d38eefe776",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "71be6b4e8506cd18c1d0e99f87eea11d5f7c2ba6c4edfe9b76b105281f75cd17"
+  },
+  "nodeGroups": [],
+  "id": "82QAuxYIlQgus8uT",
+  "tags": []
+}
